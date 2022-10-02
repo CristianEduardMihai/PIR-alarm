@@ -4,7 +4,7 @@ import cv2
 from discord_webhook import DiscordWebhook
 from pathlib import Path
 
-webhook_url = "https://discord.com/api/webhooks/1026212740760600587/_i6K6cnXgI78bc92W4vINgk8L-VBFYiRY9d6WJkMzx4qfSyjrR5nqMNjzZhNPIcsuWCT"
+webhook_url = "https://discord.com/api/webhooks/123456/abcdefg"
 
 base_folder = Path(__file__).parent.resolve()
 
