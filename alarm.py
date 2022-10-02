@@ -1,10 +1,10 @@
 import RPi.GPIO as GPIO
 import time
-from cv2 import *
+import cv2
 from discord_webhook import DiscordWebhook
 from pathlib import Path
 
-webhook_url = "https://discord.com/api/webhooks/123456/abcdefg"
+webhook_url = "https://discord.com/api/webhooks/1026212740760600587/_i6K6cnXgI78bc92W4vINgk8L-VBFYiRY9d6WJkMzx4qfSyjrR5nqMNjzZhNPIcsuWCT"
 
 base_folder = Path(__file__).parent.resolve()
 
@@ -27,7 +27,7 @@ GPIO.setup(pir3, GPIO.IN)
 # By copying the code bellow you can add multiple cameras to multiple sensors.
 # cam1, cam2 and so on.
 cam_port = 0
-cam = VideoCapture(cam_port)
+cam = cv2.VideoCapture(cam_port)
 
 while True:
     pir1_state = GPIO.input(pir1)
@@ -41,7 +41,7 @@ while True:
 
         #camera capture stuff
         image = cam.read()
-        imwrite("detected.png", image)
+        cv2.imwrite("detected.png", image)
 
         webhook1 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 1 detected movement")
         with open(f"{base_folder}/detected.png", "rb") as f:
