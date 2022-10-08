@@ -1,4 +1,12 @@
 # PIR-alarm
 A simple Raspberry Pi PIR alarm with a camera.
 
-# NOT FINISHED YET, DON'T EVEN TRY TO RUN THE CODE
+## Install
+Make a discord webhook, and put the url on line 7 in alarm.py
+
+```
+cd ~
+sudo apt install git && git clone https://github.com/CristianEduardMihai/PIR-alarm
+cd PIR-alarm
+sh setup.sh
+```
