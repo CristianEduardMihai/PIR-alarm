@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
 import time
-import cv2
 from discord_webhook import DiscordWebhook
 from pathlib import Path
+import os
 
 webhook_url = "https://discord.com/api/webhooks/123456/abcdefg"
 
@@ -19,49 +19,57 @@ GPIO.setup(pir1, GPIO.IN)
 GPIO.setup(pir2, GPIO.IN)
 GPIO.setup(pir3, GPIO.IN)
 
-#in this example, the camera is attached to pir1
+p1_detected = False
+p2_detected = False
+p3_detected = False
 
-# If you have multiple camera connected with 
-# current device, assign a value in cam_port 
-# variable according to that
-# By copying the code bellow you can add multiple cameras to multiple sensors.
-# cam1, cam2 and so on.
-cam_port = 0
-cam = cv2.VideoCapture(cam_port)
+#start a counter so a sensor doesn't spam the chat with detections
+counter = 0
 
 while True:
     pir1_state = GPIO.input(pir1)
     pir2_state = GPIO.input(pir2)
     pir3_state = GPIO.input(pir3)
+
+    counter +=1
     
     #pir1
     time.sleep(1)
     if pir1_state==1:
-        print("S1 detected")
+        if p1_detected == False:
+            p1_detected = True
+            #camera capture stuff
+            os.system("fswebcam -r 1280x720 --no-banner detected.png")
 
-        #camera capture stuff
-        image = cam.read()
-        cv2.imwrite("detected.png", image)
+            webhook1 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 1 detected movement")
+            with open(f"{base_folder}/detected.png", "rb") as f:
+                webhook1.add_file(file=f.read(), filename='detected.png')
+            webhook1.execute()
+            time.sleep(1)
 
-        webhook1 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 1 detected movement")
-        with open(f"{base_folder}/detected.png", "rb") as f:
-            webhook1.add_file(file=f.read(), filename='detected.png')
-        webhook1.execute()
-        time.sleep(1)
-
-    
     #pir2
     time.sleep(1)
     if pir2_state==1:
-        webhook2 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 2 detected movement")
-        webhook2.execute()
-        time.sleep(1)
+        if p2_detected == False:
+            p2_detected = True
+            webhook2 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 2 detected movement")
+            webhook2.execute()
+            time.sleep(1)
 
 
     #pir3
     time.sleep(1)
     if pir3_state==1:
-        webhook3 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 3 detected movement")
-        webhook3.execute()
-        time.sleep(1)
-        
+        if p3_detected == False:
+            p3_detected = True
+            webhook3 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 3 detected movement")
+            webhook3.execute()
+            time.sleep(1)
+    
+    #reset the timer every 10 loops
+    #if a sensor sent an alert, it will be silent for the next 10 loops
+    if counter == 10:
+        counter = 0
+        p1_detected = False
+        p2_detected = False
+        p3_detected = False

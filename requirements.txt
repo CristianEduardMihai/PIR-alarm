@@ -1,5 +1,2 @@
 discord-webhook
-numpy
-opencv-python
-pillow
 pathlib
