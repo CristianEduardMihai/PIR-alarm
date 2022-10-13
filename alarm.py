@@ -40,11 +40,14 @@ while True:
             p1_detected = True
             #camera capture stuff
             os.system("fswebcam -r 1280x720 --no-banner detected.png")
-
-            webhook1 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 1 detected movement")
-            with open(f"{base_folder}/detected.png", "rb") as f:
-                webhook1.add_file(file=f.read(), filename='detected.png')
-            webhook1.execute()
+            
+            try:
+                webhook1 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 1 detected movement")
+                with open(f"{base_folder}/detected.png", "rb") as f:
+                    webhook1.add_file(file=f.read(), filename='detected.png')
+                webhook1.execute()
+            except:
+                print("Could not send the Webhook/Reach the internet")
             time.sleep(1)
 
     #pir2
@@ -52,8 +55,11 @@ while True:
     if pir2_state==1:
         if p2_detected == False:
             p2_detected = True
-            webhook2 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 2 detected movement")
-            webhook2.execute()
+            try:
+                webhook2 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 2 detected movement")
+                webhook2.execute()
+            except:
+                print("Could not send the Webhook/Reach the internet")
             time.sleep(1)
 
 
@@ -62,8 +68,11 @@ while True:
     if pir3_state==1:
         if p3_detected == False:
             p3_detected = True
-            webhook3 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 3 detected movement")
-            webhook3.execute()
+            try:
+                webhook3 = DiscordWebhook(url=webhook_url, rate_limit_retry=True, content="Sensor 3 detected movement")
+                webhook3.execute()
+            except:
+                print("Could not send the Webhook/Reach the internet")
             time.sleep(1)
     
     #reset the timer every 10 loops
